@@ -33,7 +33,8 @@ class WMATAApiController extends Controller
         /**
          * In a full app, I would move the API calls into a service class whose
          * primary concern would be Access the api, that client would be preconfigured and injected in this class.
-         * Right now it is impossible to easily switch out implementations for testing
+         * Right now it is impossible to easily switch out implementations for testing or using other clients
+         * without a lot of code refactoring
          */
         $this->client = new Client([
             'base_uri' => 'https://api.wmata.com',
@@ -49,6 +50,10 @@ class WMATAApiController extends Controller
     public function getStationList()
     {
         try {
+            /**
+             * Since this wouldn't change very often, this would be stored in
+             * the database and refreshed every so often, and cached in memory for fast retrieval
+             */
             $response = $this->client->get('/Rail.svc/json/jStations');
 
             /**
@@ -83,7 +88,7 @@ class WMATAApiController extends Controller
         /**
          * In a full app this would be
          * validated by the request and a 422 returned before the
-         * request was ever made
+         * api request was ever made
          */
         $stationCode = $request->query('stationCode');
 
